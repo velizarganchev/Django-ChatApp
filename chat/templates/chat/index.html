@@ -9,6 +9,10 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
+
+        p {
+            font-size: 18px;
+        }
     }
 </style>
 
@@ -62,6 +66,11 @@
                     Button
                 </button>
             </form>
+            {% else %}
+            <h1>Not Logged In!</h1>
+            <p>You are currently not logged in. Please log in!
+                Please click <a href="/login/">Hier</a>.
+            </p>
             {% endif %}
         </div>
     </main>
