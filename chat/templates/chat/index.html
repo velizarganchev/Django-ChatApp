@@ -16,12 +16,11 @@
          fd.append('textmassage', textmassageField.value);
          fd.append('csrfmiddlewaretoken', token);
          try {
-            await fetch('/chat/', {
+            res = await fetch('/chat/', {
                 method: 'POST',
                 body: fd
             });
-                console.log('Success!!!');
- 
+            toJson = await res.json();;
             } catch (error) {
                 console.error('An error occured:', error);
         }
