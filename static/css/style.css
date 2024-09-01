@@ -1,0 +1,51 @@
+.page-content {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    p {
+        font-size: 18px;
+    }
+
+
+    .login-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        h1 {
+            margin: 40px 0;
+        }
+
+        .wrong-pasword {
+            color: red;
+        }
+
+        .form-container {
+            width: 100%;
+            height: 30vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+    }
+
+    .search-form {
+        margin-top: 20px;
+    }
+
+    .register-redirect-link {
+        margin-top: 10px;
+        font-size: 15px;
+        font-weight: bold;
+    }
+}

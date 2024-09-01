@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="login-container">
+    <h1>Register</h1>
+
+    {% if unidentical %}
+    <p class="wrong-pasword">Passwords do not match. Please make sure both passwords are identical.</p>
+    {% endif %}
+    <div class="form-container">
+        <form method="POST" action="/register/">
+            {% csrf_token %}
+            <!-- <input type="hidden" name="redirect" value="{{redirect}}"> -->
+            <div class="mdl-textfield mdl-js-textfield">
+                <input class="mdl-textfield__input" name="username" type="text" id="username">
+                <label class="mdl-textfield__label" for="username">Username...</label>
+            </div>
+            <div class="mdl-textfield mdl-js-textfield">
+                <input class="mdl-textfield__input" name="email" type="email" id="email">
+                <label class="mdl-textfield__label" for="email">Email...</label>
+            </div>
+            <div class="mdl-textfield mdl-js-textfield">
+                <input class="mdl-textfield__input" name="password" type="password" id="password">
+                <label class="mdl-textfield__label" for="password">Password...</label>
+            </div>
+            <div class="mdl-textfield mdl-js-textfield">
+                <input class="mdl-textfield__input" name="repeatPassword" type="password" id="repeatPassword">
+                <label class="mdl-textfield__label" for="repeatPassword">Repeat password...</label>
+            </div>
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                Register
+            </button>
+            <div class="register-redirect-link">or <a href="/login/">Login</a> if you have an account.</div>
+        </form>
+    </div>
+</section>
+{% endblock %}
