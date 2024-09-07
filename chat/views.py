@@ -1,9 +1,10 @@
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.core import serializers
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 from chat.models import Chat, Message
 
@@ -18,7 +19,6 @@ def index(request):
     if request.method == "POST":
         text_message = request.POST["textmassage"]
         if text_message:
-            print("Received data:", text_message)
             new_message = Message.objects.create(
                 text=text_message,
                 chat=myChat,
@@ -71,3 +71,8 @@ def login_view(request):
                 {"wrongPassword": True, "redirect": redirect},
             )
     return render(request, "auth/login.html", {"redirect": redirect})
+
+
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect("/login/")

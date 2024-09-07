@@ -1,33 +1,25 @@
-{% extends "base.html" %}
-{% block content %}
+{% extends "base.html" %} {% block content %} 
 
+{% if request.user.is_authenticated %} 
 
-{% if request.user.is_authenticated %}
-{% for message in messages %}
-<div>
-    {{ message.author }}: {{ message.text }}
+<div class="messages-container" id="messageContainer">
+    {% if messages|length < 1 %}
+        <h2 class="no-posts-message" id="noMesseges">There are no messages yet. Start the conversation!</h2>
+    {% else %}
+        {% for message in messages %}
+        <div class="message-item-container {% if not message.author.is_superuser %}right{% endif %}">
+            <div class="message-item {% if not message.author.is_superuser %}right-border{% endif %}">
+                <span class="message-author">{{ message.author }}</span>:
+                <span class="message-text">{{ message.text }}</span>
+                <span class="message-date">{{ message.created_at }}</span>
+            </div>
+        </div>
+        {% endfor %}
+    {% endif %}
 </div>
-{% endfor %}
 
-<script>
-    async function sendMessage(){
-         fd = new FormData();
-         let token = '{{ csrf_token }}';
-         fd.append('textmassage', textmassageField.value);
-         fd.append('csrfmiddlewaretoken', token);
-         try {
-            res = await fetch('/chat/', {
-                method: 'POST',
-                body: fd
-            });
-            toJson = await res.json();;
-            } catch (error) {
-                console.error('An error occured:', error);
-        }
-     }
- </script>
 
-<form class="search-form" onsubmit="sendMessage(); return false;" method="post">
+<form id="messageForm" class="search-form" onsubmit="sendMessage(); return false;" method="post" data-csrf="{{ csrf_token }}" data-user="{{ request.user.username }}" data-isSuperUser="{{ request.user.is_superuser }}">
     {% csrf_token %}
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
         <input class="mdl-textfield__input" name="textmassage" id="textmassageField" type="text">
@@ -37,10 +29,12 @@
         Button
     </button>
 </form>
+
 {% else %}
 <h1>Not Logged In!</h1>
-<p>You are currently not logged in. Please log in!
-    Click <a href="/login/">here</a> to log in, or <a href="/register/">register</a> if you don't have an account.
+<p>
+  You are currently not logged in. Please log in! Click
+  <a href="/login/">here</a> to log in, or <a href="/register/">register</a> if
+  you don't have an account.
 </p>
-{% endif %}
-{% endblock %}
+{% endif %} {% endblock %}

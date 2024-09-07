@@ -1,51 +1,154 @@
+body {
+  background-color: whitesmoke;
+}
+
 .page-content {
-    margin-top: 30px;
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+  background-color: whitesmoke;
+
+  p {
+    font-size: 18px;
+  }
+
+  .messages-container {
+    width: 80%;
+    padding: 40px 20px 20px 20px;
+    border: 1px solid rgb(0, 150, 136);
+    border-radius: 30px;
+    height: 60vh;
     display: flex;
     flex-direction: column;
+    gap: 28px;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+    background-color: white;
+  }
+
+  .messages-container::-webkit-scrollbar {
+    width: 10px;
+    height: 14px;
+  }
+
+  .messages-container::-webkit-scrollbar-thumb {
+    height: 6px;
+    border: 4px solid rgb(0, 150, 136);
+    background-clip: padding-box;
+    border-radius: 0 7px 7px 0;
+    background-color: rgb(0, 150, 136);
+    box-shadow: inset -1px -1px 0px rgba(0, 0, 0, 0.05),
+      inset 1px 1px 0px rgba(0, 0, 0, 0.05);
+  }
+
+  .messages-container::-webkit-scrollbar-button {
+    width: 0;
+    height: 0;
+    display: none;
+  }
+
+  .messages-container::-webkit-scrollbar-corner {
+    background-color: transparent;
+  }
+
+  .messages-container:hover {
+    cursor: pointer;
+  }
+
+  .no-posts-message {
+    text-align: center;
+    color: rgb(0, 150, 136);
+  }
+
+  .message-item-container {
+    display: flex;
+    align-items: center;
+    font-size: 20px;
+  }
+
+  .message-item {
+    background-color: whitesmoke;
+    color: rgb(0, 150, 136);
+    width: fit-content;
+    padding: 16px;
+    border: 1px solid rgb(0, 150, 136);
+    border-radius: 0px 30px 30px 30px;
+  }
+
+  .message-author {
+    font-size: 18px;
+    font-weight: 700;
+    font-style: italic;
+  }
+
+  .message-text {
+    font-size: 28px;
+  }
+
+  .message-date {
+    font-size: 10px;
+  }
+
+  form {
+    width: 60%;
+    display: flex;
     align-items: center;
     justify-content: center;
+    gap: 28px;
+    padding: 20px;
+    border: 1px solid rgb(0, 150, 136);
+    border-radius: 30px;
+    background-color: white;
+  }
 
-    p {
-        font-size: 18px;
+  .login-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .wrong-pasword {
+      color: red;
     }
 
-
-    .login-container {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-
-        h1 {
-            margin: 40px 0;
-        }
-
-        .wrong-pasword {
-            color: red;
-        }
-
-        .form-container {
-            width: 100%;
-            height: 30vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        form {
-            display: flex;
-            flex-direction: column;
-        }
-
+    .form-container {
+      width: 100%;
+      min-height: 30vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
-    .search-form {
-        margin-top: 20px;
+    form {
+      display: flex;
+      flex-direction: column;
     }
+  }
 
-    .register-redirect-link {
-        margin-top: 10px;
-        font-size: 15px;
-        font-weight: bold;
-    }
+  .search-form {
+    margin-top: 20px;
+  }
+
+  .register-redirect-link {
+    margin-top: 10px;
+    font-size: 15px;
+    font-weight: bold;
+  }
+
+  .right {
+    justify-content: flex-end;
+  }
+
+  .right-border {
+    border-radius: 30px 0px 30px 30px !important;
+  }
+
+  .gray {
+    color: rgb(143 157 156) !important;
+    border-color: rgb(143 157 156) !important;
+  }
 }
