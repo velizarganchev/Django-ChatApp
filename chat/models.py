@@ -7,7 +7,10 @@ from django.db.models.fields import DateField
 
 
 class Chat(models.Model):
+    name = models.CharField(max_length=100, default='Default Name')
     created_at = DateField(default=date.today)
+    def __str__(self):
+        return self.name 
 
 
 class Message(models.Model):

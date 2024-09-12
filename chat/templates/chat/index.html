@@ -1,40 +1,29 @@
-{% extends "base.html" %} {% block content %} 
+{% extends "base.html" %}
+{% block content %}
 
-{% if request.user.is_authenticated %} 
-
-<div class="messages-container" id="messageContainer">
-    {% if messages|length < 1 %}
-        <h2 class="no-posts-message" id="noMesseges">There are no messages yet. Start the conversation!</h2>
+{% if chats|length < 1 %} <h2 class="no-posts-message" id="noMesseges">There are no chats yet. Create one!</h2>
     {% else %}
-        {% for message in messages %}
-        <div class="message-item-container {% if not message.author.is_superuser %}right{% endif %}">
-            <div class="message-item {% if not message.author.is_superuser %}right-border{% endif %}">
-                <span class="message-author">{{ message.author }}</span>:
-                <span class="message-text">{{ message.text }}</span>
-                <span class="message-date">{{ message.created_at }}</span>
-            </div>
-        </div>
+    <h1>Chats</h1>
+    <ul class="demo-list-item mdl-list" id="chatsList">
+        {% for chat in chats %}
+        <li class="mdl-list__item">
+            <span class="mdl-list__item-primary-content">
+                <a class="chat-item" href="/chat/{{ chat.id }}">{{ chat.name }}</a>
+            </span>
+        </li>
         {% endfor %}
+    </ul>
+    <form id="chatForm" class="search-form" onsubmit="createChat(); return false;" method="post"
+        data-csrf="{{ csrf_token }}">
+        {% csrf_token %}
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <input class="mdl-textfield__input" type="text" id="chatNameField">
+            <label class="mdl-textfield__label" for="sample3">Chat...</label>
+        </div>
+        <button id="create-chat-btn" type="submit"
+            class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+            Create
+        </button>
+    </form>
     {% endif %}
-</div>
-
-
-<form id="messageForm" class="search-form" onsubmit="sendMessage(); return false;" method="post" data-csrf="{{ csrf_token }}" data-user="{{ request.user.username }}" data-isSuperUser="{{ request.user.is_superuser }}">
-    {% csrf_token %}
-    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-        <input class="mdl-textfield__input" name="textmassage" id="textmassageField" type="text">
-        <label class="mdl-textfield__label" for="textmassageField">Text...</label>
-    </div>
-    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
-        Button
-    </button>
-</form>
-
-{% else %}
-<h1>Not Logged In!</h1>
-<p>
-  You are currently not logged in. Please log in! Click
-  <a href="/login/">here</a> to log in, or <a href="/register/">register</a> if
-  you don't have an account.
-</p>
-{% endif %} {% endblock %}
+    {% endblock %}

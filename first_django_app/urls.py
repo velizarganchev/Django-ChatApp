@@ -16,12 +16,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.views.generic import RedirectView 
 
-from chat.views import index, login_view, register_view, logout_view
+from chat.views import index, login_view, register_view, logout_view, single_chat_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('chat/', index),
+    path('', RedirectView.as_view(pattern_name='index'), name='home'),
+    path('chat/', index, name='index'),
+    path('chat/<int:chat_id>', single_chat_view , name='single_chat'),
     path('login/', login_view, name='login'),
     path('logout/', logout_view, name='logout'),
     path('register/', register_view),

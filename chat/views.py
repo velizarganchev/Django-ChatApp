@@ -1,3 +1,4 @@
+import json
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.core import serializers
@@ -7,9 +8,34 @@ from django.contrib.auth.decorators import login_required
 
 from chat.models import Chat, Message
 
+
 @login_required(login_url="/login/")
 def index(request):
-    myChat = Chat.objects.get(id=1)
+    chats = Chat.objects.all()
+
+    if request.method == "POST":
+        chat_name = request.POST["chatname"]
+        if chat_name:
+            new_chat = Chat.objects.create(
+                name=chat_name,
+            )
+
+            serialized_obj = serializers.serialize("json", [new_chat])
+
+            serialized_data = json.loads(serialized_obj)[0]
+            response_data = {
+                'id': serialized_data['pk'],
+                'name': serialized_data['fields']['name'],
+                'created_at': serialized_data['fields']['created_at'],
+            }
+            return JsonResponse(response_data, safe=False)
+
+        chats = Chat.objects.all()
+    return render(request, "chat/index.html", {"chats": chats})
+
+
+def single_chat_view(request, chat_id):
+    myChat = Chat.objects.get(id=chat_id)
     chatMessages = Message.objects.filter(chat=myChat)
 
     if request.method == "POST":
@@ -31,7 +57,7 @@ def index(request):
 
         chatMessages = Message.objects.filter(chat=myChat)
 
-    return render(request, "chat/index.html", {"messages": chatMessages})
+    return render(request, "chat/single_chat.html", {"messages": chatMessages, "chat": myChat.name, "chatId": chat_id})
 
 
 def register_view(request):
