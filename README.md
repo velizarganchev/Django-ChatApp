@@ -1,5 +1,4 @@
 ## Django Simple Chat
-[velizar-ganchev.com](https://velizar-ganchev.com/)
 
 Installation Guide:
 
