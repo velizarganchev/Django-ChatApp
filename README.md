@@ -1,5 +1,7 @@
 ## Django Simple Chat
 
+![Alt text](https://github.com/velizarganchev/Django-ChatApp/blob/main/static/img/screenshot.png "Simple Chat")
+
 Installation Guide:
 ```
 python -m venv venv
