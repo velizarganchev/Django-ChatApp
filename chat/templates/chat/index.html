@@ -4,17 +4,28 @@
 {% if chats|length < 1 %} <h2 class="no-posts-message" id="noMesseges">There are no chats yet. Create one!</h2>
     {% else %}
     <h1>Chats</h1>
+    {% endif %}
     <ul class="demo-list-item mdl-list" id="chatsList">
         {% for chat in chats %}
         <li class="mdl-list__item">
             <span class="mdl-list__item-primary-content">
                 <a class="chat-item" href="/chat/{{ chat.id }}">{{ chat.name }}</a>
             </span>
+            {% if chat.creator == user %}
+            <span>
+                <form class="delete-form" method="post" action="{% url 'delete_chat' chat.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="mdl-button mdl-js-button mdl-button--accent delete-btn">
+                        Delete
+                    </button>
+                </form>
+            </span>
+            {% endif %}
         </li>
         {% endfor %}
     </ul>
     <form id="chatForm" class="search-form" onsubmit="createChat(); return false;" method="post"
-        data-csrf="{{ csrf_token }}">
+        data-csrf="{{ csrf_token }}" data-current-user-id="{{ request.user.id }}">
         {% csrf_token %}
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
             <input class="mdl-textfield__input" type="text" id="chatNameField">
@@ -25,5 +36,4 @@
             Create
         </button>
     </form>
-    {% endif %}
     {% endblock %}

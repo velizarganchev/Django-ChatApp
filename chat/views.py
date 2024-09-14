@@ -18,6 +18,7 @@ def index(request):
         if chat_name:
             new_chat = Chat.objects.create(
                 name=chat_name,
+                creator=request.user
             )
 
             serialized_obj = serializers.serialize("json", [new_chat])
@@ -26,12 +27,13 @@ def index(request):
             response_data = {
                 'id': serialized_data['pk'],
                 'name': serialized_data['fields']['name'],
+                'creator': serialized_data['fields']['creator'],
                 'created_at': serialized_data['fields']['created_at'],
             }
             return JsonResponse(response_data, safe=False)
 
         chats = Chat.objects.all()
-    return render(request, "chat/index.html", {"chats": chats})
+    return render(request, "chat/index.html", {"chats": chats, "user": request.user})
 
 
 def single_chat_view(request, chat_id):
@@ -57,7 +59,15 @@ def single_chat_view(request, chat_id):
 
         chatMessages = Message.objects.filter(chat=myChat)
 
-    return render(request, "chat/single_chat.html", {"messages": chatMessages, "chat": myChat.name, "chatId": chat_id})
+    return render(request, "chat/single_chat.html", {"messages": chatMessages, "chat": myChat, "chatId": chat_id, "chat_creator": myChat.creator})
+
+
+def delete_chat(request, chat_id):
+    chatToDelete = Chat.objects.get(id=chat_id)
+    if request.method == "POST":
+        if request.user == chatToDelete.creator:
+            chatToDelete.delete()
+        return HttpResponseRedirect("/chat/")
 
 
 def register_view(request):

@@ -12,17 +12,17 @@ async function sendMessage() {
   if (textmassageField.value !== "") {
     const csrfToken = messageForm.getAttribute("data-csrf");
     const chatId = messageForm.getAttribute("data-chatId");
+    const chatCreator = messageForm.getAttribute("data-chat_creator");
     const username = messageForm.getAttribute("data-user");
-    const superUser = messageForm.getAttribute("data-isSuperUser") === "True";
 
     const fd = new FormData();
     fd.append("textmassage", textmassageField.value);
     fd.append("csrfmiddlewaretoken", csrfToken);
 
     messageContainer.innerHTML += `
-      <div id="itemToDelete" class="message-item-container ${!superUser ? "right" : ""
+      <div id="itemToDelete" class="message-item-container ${chatCreator !== username ? "right" : ""
       }">
-          <div class="message-item ${!superUser ? "right-border" : ""} gray">
+          <div class="message-item ${chatCreator !== username ? "right-border" : ""} gray">
               <span class="message-author">${username}</span>:
               <span class="message-text">${textmassageField.value}</span>
           </div>
@@ -37,6 +37,10 @@ async function sendMessage() {
       const toJson = await res.json();
       const obj = JSON.parse(toJson).fields;
 
+      const date = new Date(obj.created_at);
+      const options = { year: 'numeric', month: 'short', day: 'numeric' };
+      const formattedDate = date.toLocaleDateString('en-US', options);
+
       document.getElementById("itemToDelete").remove();
 
       let noMessage = document.getElementById("noMesseges");
@@ -45,11 +49,11 @@ async function sendMessage() {
       }
 
       messageContainer.innerHTML += `
-      <div class="message-item-container ${obj.author != 1 ? "right" : ""}">
-          <div class="message-item ${!superUser ? "right-border" : ""}">
+      <div class="message-item-container ${chatCreator !== username ? "right" : ""}">
+          <div class="message-item ${chatCreator !== username ? "right-border" : ""}">
               <span class="message-author">${username}</span>:
               <span class="message-text">${obj.text}</span>
-              <span class="message-date">${obj.created_at}</span>
+              <span class="message-date">${formattedDate}</span>
           </div>
       </div>`;
 
@@ -94,10 +98,22 @@ async function createChat() {
 
     const toJson = await res.json();
 
+    const currentUserId = chatForm.getAttribute("data-current-user-id");
+    const deleteButtonHTML = (parseInt(toJson.creator) === parseInt(currentUserId)) ? `
+      <span>
+        <form class="delete-form" method="post" action="/chat/delete/${toJson.id}">
+          <input type="hidden" name="csrfmiddlewaretoken" value="${csrfToken}">
+          <button type="submit" class="mdl-button mdl-js-button mdl-button--accent delete-btn">
+            Delete
+          </button>
+        </form>
+      </span>` : "";
+
     chatsList.innerHTML += `<li class="mdl-list__item">
             <span class="mdl-list__item-primary-content">
                 <a class="chat-item" href="/chat/${toJson.id}">${toJson.name}</a>
             </span>
+            ${deleteButtonHTML}
         </li>`;
 
     document.getElementById("chatNameField").value = "";

@@ -8,9 +8,12 @@ from django.db.models.fields import DateField
 
 class Chat(models.Model):
     name = models.CharField(max_length=100, default='Default Name')
+    creator = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='creator_message_set')
     created_at = DateField(default=date.today)
+
     def __str__(self):
-        return self.name 
+        return self.name
 
 
 class Message(models.Model):
