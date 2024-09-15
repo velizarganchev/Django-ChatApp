@@ -7,7 +7,7 @@
     <p class="wrong-pasword">Username or Password is wrong!</p>
     {% endif %}
     <div class="form-container">
-        <form method="POST" action="/login/">
+        <form class="login-form" method="POST" action="/login/">
             {% csrf_token %}
             <input type="hidden" name="redirect" value="{{redirect}}">
             <div class="mdl-textfield mdl-js-textfield">

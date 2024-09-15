@@ -12,23 +12,12 @@ SECRET_KEY = 'django-insecure-2zgco3okp))n1%b(2erg9&z16anln5ja-2&d6luc9$o6lj^9ve
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
-ASGI_APPLICATION = 'first_django_app.asgi.application'
-
-# Channels configuration
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": [('127.0.0.1', 6379)],  # Redis host and port
-        },
-    },
-}
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -36,7 +25,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'chat',
-    'channels',
 ]
 
 MIDDLEWARE = [
@@ -69,6 +57,14 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'first_django_app.wsgi.application'
+ASGI_APPLICATION = 'first_django_app.asgi.application'
+
+# Channels configuration
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+}
 
 # Database
 DATABASES = {

@@ -1,5 +1,7 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
+from django.utils import timezone
+
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -21,23 +23,29 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
-        message = text_data_json['message']
+        textmassage = text_data_json['textmassage']
         username = text_data_json['username']
+
+        # Optional: Du könntest hier auch das aktuelle Datum und die Uhrzeit hinzufügen
+        created_at = timezone.now().isoformat()  # ISO 8601 format
 
         await self.channel_layer.group_send(
             self.room_group_name,
             {
                 'type': 'chat_message',
-                'message': message,
-                'username': username
+                'textmassage': textmassage,
+                'username': username,
+                'created_at': created_at
             }
         )
 
     async def chat_message(self, event):
-        message = event['message']
+        textmassage = event['textmassage']
         username = event['username']
+        created_at = event['created_at']  # Empfang von created_at
 
         await self.send(text_data=json.dumps({
-            'message': message,
-            'username': username
+            'textmassage': textmassage,
+            'username': username,
+            'created_at': created_at  # Füge created_at zu den gesendeten Daten hinzu
         }))

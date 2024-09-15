@@ -7,7 +7,7 @@
     <p class="wrong-pasword">Passwords do not match. Please make sure both passwords are identical.</p>
     {% endif %}
     <div class="form-container">
-        <form method="POST" action="/register/">
+        <form class="register-form" method="POST" action="/register/">
             {% csrf_token %}
             <!-- <input type="hidden" name="redirect" value="{{redirect}}"> -->
             <div class="mdl-textfield mdl-js-textfield">

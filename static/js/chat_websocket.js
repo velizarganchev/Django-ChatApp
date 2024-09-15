@@ -1,83 +1,89 @@
-document.addEventListener('DOMContentLoaded', function () {
-    // Hole die chatId und weitere Daten aus den Attributen des Forms
-    const chatId = document.getElementById("messageForm").getAttribute("data-chatId");
-    const chatCreator = document.getElementById("messageForm").getAttribute("data-chat_creator");
-    const username = document.getElementById("messageForm").getAttribute("data-user");
+const url = window.location.pathname;
+const chatId = url.split("/")[2];
 
-    // WebSocket-Verbindung nur auf dieser Seite erstellen
-    const chatSocket = new WebSocket(
-        'ws://' + window.location.host + '/ws/chat/' + chatId + '/'
-    );
+// const socket = new WebSocket('ws://127.0.0.1:8000/ws/chat/' + chatId + '/');
+const socketProtocol = window.location.protocol === "https:" ? "wss" : "ws";
+const socket = new WebSocket(
+    socketProtocol
+    + '://'
+    + window.location.host  
+    + '/ws/chat/'
+    + chatId
+    + '/'
+);
 
-    chatSocket.onmessage = function (e) {
-        const data = JSON.parse(e.data);
+socket.onmessage = function (e) {
+    const data = JSON.parse(e.data);
+    const userId = messageForm.getAttribute("data-user-id");
 
-        const date = new Date(data.created_at);
-        const options = { year: 'numeric', month: 'short', day: 'numeric' };
-        const formattedDate = date.toLocaleDateString('en-US', options);
+    const date = new Date(data.created_at);
+    const options = { year: 'numeric', month: 'short', day: 'numeric' };
+    const formattedDate = date.toLocaleDateString('en-US', options);
 
-        let noMessage = document.getElementById("noMesseges");
-        if (noMessage) {
-            document.getElementById("noMesseges").remove();
-        }
+    let noMessage = document.getElementById("noMesseges");
+    if (noMessage) {
+        document.getElementById("noMesseges").remove();
+    }
 
-        const messageContainer = document.getElementById('messageContainer');
+    messageContainer.innerHTML += `
+    <div class="message-item-container ${data.author !== userId ? "right" : ""}">
+        <div class="message-item ${data.author !== userId ? "right-border" : ""}">
+            <span class="message-author">${data.username}</span>:
+            <span class="message-text">${data.text}</span>
+            <span class="message-date">${formattedDate}</span>
+        </div>
+    </div>`;
+
+    messageContainer.scrollTop = messageContainer.scrollHeight;
+};
+
+async function sendMessage() {
+    const textmassageField = document.getElementById("textmassageField");
+    if (textmassageField.value !== "") {
+        const csrfToken = messageForm.getAttribute("data-csrf");
+        const chatId = messageForm.getAttribute("data-chatId");
+        const userId = messageForm.getAttribute("data-user-id");
+        const username = messageForm.getAttribute("data-user-name");
+
+        const messageData = {
+            textmassage: textmassageField.value,
+            csrfmiddlewaretoken: csrfToken,
+            chatId: chatId,
+            userId: userId,
+            username: username,
+        };
+
         messageContainer.innerHTML += `
-        <div class="message-item-container ${chatCreator !== username ? "right" : ""}">
-            <div class="message-item ${chatCreator !== username ? "right-border" : ""}">
-                <span class="message-author">${data.username}</span>:
-                <span class="message-text">${data.text}</span>
-                <span class="message-date">${formattedDate}</span>
-            </div>
-        </div>`;
+      <div id="itemToDelete" class="message-item-container right">
+          <div class="message-item right-border gray">
+              <span class="message-author">${username}</span>:
+              <span class="message-text">${textmassageField.value}</span>
+          </div>
+      </div>`;
 
-        messageContainer.scrollTop = messageContainer.scrollHeight;
-    };
-
-    chatSocket.onclose = function (e) {
-        console.error('Chat socket closed unexpectedly');
-    };
-
-    // Nachricht senden
-    const messageForm = document.getElementById("messageForm");
-    messageForm.onsubmit = function (event) {
-        event.preventDefault();
-
-        const textmassageField = document.getElementById("textmassageField");
-        if (textmassageField.value !== "") {
-            const message = {
-                text: textmassageField.value,
-                username: username
-            };
-
-            // Nachricht über WebSocket senden
-            chatSocket.send(JSON.stringify(message));
-
-            // Temporäre Nachricht anzeigen
-            const messageContainer = document.getElementById("messageContainer");
-            messageContainer.innerHTML += `
-          <div id="itemToDelete" class="message-item-container right">
-              <div class="message-item right-border gray">
-                  <span class="message-author">${username}</span>:
-                  <span class="message-text">${textmassageField.value}</span>
-              </div>
-          </div>`;
-
-            document.getElementById("textmassageField").value = "";
-            messageContainer.scrollTop = messageContainer.scrollHeight;
+        try {
+            socket.send(JSON.stringify(messageData));
+        } catch (error) {
+            console.error('Error sending message:', error);
         }
-    };
 
-    // Init-Funktion aufrufen, um nach dem Laden der Seite automatisch zu scrollen
-    init();
-});
+        document.getElementById("textmassageField").value = "";
 
-// Init-Funktion, um das automatische Scrollen zu ermöglichen
-function init() {
-    const messageContainer = document.getElementById("messageContainer");
-    if (messageContainer) {
-        setTimeout(() => {
-            messageContainer.scrollTop = messageContainer.scrollHeight;
-        }, 50);
+    } else {
+        const messageInputEmpty = document.getElementById('message-input-empty');
+        if (messageInputEmpty) {
+            const emptyMessage = document.createElement('p');
+            emptyMessage.id = "emptyMessage";
+            emptyMessage.className = "empty-message";
+            emptyMessage.textContent = "Please enter your message!";
+
+            messageInputEmpty.appendChild(emptyMessage);
+
+            setTimeout(() => {
+                if (emptyMessage.parentNode) {
+                    emptyMessage.parentNode.removeChild(emptyMessage);
+                }
+            }, 2500);
+        }
     }
 }

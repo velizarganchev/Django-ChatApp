@@ -237,9 +237,12 @@ h3 {
 
 @media screen and (max-width: 1092px) {
 
+  .chat-form {
+    flex-direction: column;
+  }
+
   .chat-form>.mdl-textfield {
     width: 100% !important;
-    flex-direction: column;
   }
 
   .create-chat-btn {
