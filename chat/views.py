@@ -1,4 +1,5 @@
 import json
+from django.db.models import Q
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.core import serializers
@@ -11,15 +12,23 @@ from chat.models import Chat, Message
 
 @login_required(login_url="/login/")
 def index(request):
-    chats = Chat.objects.all()
+    chats = Chat.objects.filter(
+        Q(creator=request.user) | Q(receiver=request.user))
+    users = User.objects.exclude(id=request.user.id)
 
     if request.method == "POST":
         chat_name = request.POST["chatname"]
+        receiver_name = request.POST["receiverName"]
+        print(receiver_name)
+
         if chat_name:
+            creator_user = User.objects.get(username=request.user)
+            receiver_user = User.objects.get(username=receiver_name)
+
             new_chat = Chat.objects.create(
                 name=chat_name,
-                creator=request.user
-            )
+                receiver=receiver_user,
+                creator=creator_user)
 
             serialized_obj = serializers.serialize("json", [new_chat])
 
@@ -33,7 +42,7 @@ def index(request):
             return JsonResponse(response_data, safe=False)
 
         chats = Chat.objects.all()
-    return render(request, "chat/index.html", {"chats": chats, "user": request.user})
+    return render(request, "chat/index.html", {"chats": chats, "users": users, "curr_user": request.user})
 
 
 def single_chat_view(request, chat_id):

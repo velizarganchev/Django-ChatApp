@@ -148,6 +148,27 @@ h3 {
     margin-top: 20px;
   }
 
+  .chat-form {
+    max-width: 50% !important;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 22px;
+  }
+
+  .select-user-container {
+    display: flex;
+    gap: 18px;
+  }
+
+  .no-selected-user-container {
+    margin-top: 45px;
+  }
+
+  .mdl-menu {
+    overflow: auto !important;
+    max-height: 240px !important;
+  }
+
   .empty-message-container {
 
     border: 1px solid rgb(0, 150, 136);
@@ -164,6 +185,12 @@ h3 {
     margin-top: 10px;
     font-size: 15px;
     font-weight: bold;
+  }
+
+  .register-redirect-link a {
+    font-size: 15px;
+    color: rgb(0 122 62);
+    font-weight: 700;
   }
 
   .right {
@@ -205,5 +232,17 @@ h3 {
     border: none !important;
     border-radius: 0 !important;
     background-color: transparent !important;
+  }
+}
+
+@media screen and (max-width: 1092px) {
+
+  .chat-form>.mdl-textfield {
+    width: 100% !important;
+    flex-direction: column;
+  }
+
+  .create-chat-btn {
+    width: 100%;
   }
 }

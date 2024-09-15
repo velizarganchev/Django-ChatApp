@@ -11,7 +11,7 @@
             <span class="mdl-list__item-primary-content">
                 <a class="chat-item" href="/chat/{{ chat.id }}">{{ chat.name }}</a>
             </span>
-            {% if chat.creator == user %}
+            {% if chat.creator == curr_user %}
             <span>
                 <form class="delete-form" method="post" action="{% url 'delete_chat' chat.id %}">
                     {% csrf_token %}
@@ -24,16 +24,32 @@
         </li>
         {% endfor %}
     </ul>
-    <form id="chatForm" class="search-form" onsubmit="createChat(); return false;" method="post"
+    <form id="chatForm" class="chat-form" onsubmit="createChat(); return false;" method="post"
         data-csrf="{{ csrf_token }}" data-current-user-id="{{ request.user.id }}">
         {% csrf_token %}
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
             <input class="mdl-textfield__input" type="text" id="chatNameField">
             <label class="mdl-textfield__label" for="sample3">Chat...</label>
         </div>
+        <div class="select-user-container">
+            <div class="users-chips-container" id="chips-container">
+                <span class="mdl-chip">
+                    <span class="mdl-chip__text">Select User</span>
+                </span>
+            </div>
+            <button type="button" id="demo-menu-lower-left" class="mdl-button mdl-js-button mdl-button--icon">
+                <i class="material-icons mdl-list__item-icon">person</i>
+            </button>
+            <ul class="mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect" for="demo-menu-lower-left">
+                {% for user in users %}
+                <li class="mdl-menu__item" onclick="selectUser('{{ user.username }}')">{{ user }}</li>
+                {% endfor %}
+            </ul>
+        </div>
         <button id="create-chat-btn" type="submit"
-            class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+            class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored create-chat-btn">
             Create
         </button>
     </form>
+    <div class="no-selected-user-container" id="no-user-container"></div>
     {% endblock %}

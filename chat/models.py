@@ -10,6 +10,8 @@ class Chat(models.Model):
     name = models.CharField(max_length=100, default='Default Name')
     creator = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='creator_message_set')
+    receiver = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='receiver_chat_set')
     created_at = DateField(default=date.today)
 
     def __str__(self):
